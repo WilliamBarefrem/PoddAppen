@@ -14,5 +14,8 @@ namespace BL
         PoddFeed? GetById(string id);
         bool Update(PoddFeed feed);
         bool Delete (string id);
+
+
+        List<Episode> LoadEpisodesFromRss(string rssUrl);
     }
 }

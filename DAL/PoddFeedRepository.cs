@@ -43,6 +43,8 @@ namespace DAL
 
             existing.Name = item.Name;
             existing.RssUrl = item.RssUrl;
+            existing.CategoryId = item.CategoryId;  
+
             return true;
         }
 
