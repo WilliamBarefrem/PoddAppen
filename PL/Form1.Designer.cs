@@ -34,6 +34,12 @@
             lblRss = new Label();
             btnLaggTill = new Button();
             lstPoddar = new ListBox();
+            btnTaBortPodd = new Button();
+            lblCategoryName = new Label();
+            txtCategoryName = new TextBox();
+            lstCategories = new ListBox();
+            btnAddCategory = new Button();
+            btnDeleteCategory = new Button();
             SuspendLayout();
             // 
             // txtName
@@ -70,11 +76,11 @@
             // 
             // btnLaggTill
             // 
-            btnLaggTill.Location = new Point(32, 331);
+            btnLaggTill.Location = new Point(28, 368);
             btnLaggTill.Name = "btnLaggTill";
-            btnLaggTill.Size = new Size(150, 46);
+            btnLaggTill.Size = new Size(175, 46);
             btnLaggTill.TabIndex = 4;
-            btnLaggTill.Text = "Lagg Till";
+            btnLaggTill.Text = "Lagg Till Podd";
             btnLaggTill.UseVisualStyleBackColor = true;
             btnLaggTill.Click += btnLaggTill_Click;
             // 
@@ -86,11 +92,71 @@
             lstPoddar.Size = new Size(240, 164);
             lstPoddar.TabIndex = 5;
             // 
+            // btnTaBortPodd
+            // 
+            btnTaBortPodd.Location = new Point(28, 316);
+            btnTaBortPodd.Name = "btnTaBortPodd";
+            btnTaBortPodd.Size = new Size(159, 46);
+            btnTaBortPodd.TabIndex = 6;
+            btnTaBortPodd.Text = "Ta Bort Podd";
+            btnTaBortPodd.UseVisualStyleBackColor = true;
+            btnTaBortPodd.Click += btnTaBortPodd_Click_1;
+            // 
+            // lblCategoryName
+            // 
+            lblCategoryName.AutoSize = true;
+            lblCategoryName.Location = new Point(513, 40);
+            lblCategoryName.Name = "lblCategoryName";
+            lblCategoryName.Size = new Size(103, 32);
+            lblCategoryName.TabIndex = 7;
+            lblCategoryName.Text = "Kategori";
+            // 
+            // txtCategoryName
+            // 
+            txtCategoryName.Location = new Point(521, 75);
+            txtCategoryName.Name = "txtCategoryName";
+            txtCategoryName.Size = new Size(200, 39);
+            txtCategoryName.TabIndex = 8;
+            // 
+            // lstCategories
+            // 
+            lstCategories.FormattingEnabled = true;
+            lstCategories.Location = new Point(521, 147);
+            lstCategories.Name = "lstCategories";
+            lstCategories.Size = new Size(240, 164);
+            lstCategories.TabIndex = 9;
+            // 
+            // btnAddCategory
+            // 
+            btnAddCategory.Location = new Point(523, 324);
+            btnAddCategory.Name = "btnAddCategory";
+            btnAddCategory.Size = new Size(219, 46);
+            btnAddCategory.TabIndex = 10;
+            btnAddCategory.Text = "Lagg Till Kategori";
+            btnAddCategory.UseVisualStyleBackColor = true;
+            btnAddCategory.Click += btnAddCategory_Click_1;
+            // 
+            // btnDeleteCategory
+            // 
+            btnDeleteCategory.Location = new Point(522, 386);
+            btnDeleteCategory.Name = "btnDeleteCategory";
+            btnDeleteCategory.Size = new Size(220, 46);
+            btnDeleteCategory.TabIndex = 11;
+            btnDeleteCategory.Text = "Ta Bort Kategori";
+            btnDeleteCategory.UseVisualStyleBackColor = true;
+            btnDeleteCategory.Click += btnDeleteCategory_Click_1;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(1234, 595);
+            Controls.Add(btnDeleteCategory);
+            Controls.Add(btnAddCategory);
+            Controls.Add(lstCategories);
+            Controls.Add(txtCategoryName);
+            Controls.Add(lblCategoryName);
+            Controls.Add(btnTaBortPodd);
             Controls.Add(lstPoddar);
             Controls.Add(btnLaggTill);
             Controls.Add(lblRss);
@@ -112,5 +178,11 @@
         private Label lblRss;
         private Button btnLaggTill;
         private ListBox lstPoddar;
+        private Button btnTaBortPodd;
+        private Label lblCategoryName;
+        private TextBox txtCategoryName;
+        private ListBox lstCategories;
+        private Button btnAddCategory;
+        private Button btnDeleteCategory;
     }
 }

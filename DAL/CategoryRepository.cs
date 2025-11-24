@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Models;
+using BL;
 
 namespace DAL
 {
-    public class CategoryRepository 
+    public class CategoryRepository : IRepository<Category>
     {
         private readonly List<Category> _categories = new();
 

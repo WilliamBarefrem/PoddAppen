@@ -13,14 +13,16 @@ namespace PL
         {
             ApplicationConfiguration.Initialize();
 
-            // 1. Skapa repo (DAL)
-            IRepository<PoddFeed> repo = new PoddFeedRepository();
+            // ====== PoddFeed setup ======
+            IRepository<PoddFeed> poddRepo = new PoddFeedRepository();
+            IPoddFeedService poddService = new PoddFeedService(poddRepo);
 
-            // 2. Skapa service (BL)
-            IPoddFeedService service = new PoddFeedService(repo);
+            // ====== Category setup ======
+            IRepository<Category> categoryRepo = new CategoryRepository();
+            ICategoryService categoryService = new CategoryService(categoryRepo);
 
-            // 3. Skicka in service till formuläret
-            Application.Run(new Form1(service));
+            // ====== Start WinForms with BOTH services ======
+            Application.Run(new Form1(poddService, categoryService));
         }
     }
 }
