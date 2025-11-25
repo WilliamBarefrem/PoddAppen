@@ -13,15 +13,17 @@ namespace PL
         {
             ApplicationConfiguration.Initialize();
 
-            // ====== PoddFeed setup ======
-            IRepository<PoddFeed> poddRepo = new PoddFeedRepository();
+            // TODO: byt till din riktiga connection string från Atlas
+            var connectionString = "mongodb+srv://muretdurakovic_db_user:Denko@poddappen.z6ewler.mongodb.net/?appName=PoddAppen";
+
+            // Poddar via Mongo
+            IRepository<PoddFeed> poddRepo = new MongoPoddFeedRepository(connectionString);
             IPoddFeedService poddService = new PoddFeedService(poddRepo);
 
-            // ====== Category setup ======
-            IRepository<Category> categoryRepo = new CategoryRepository();
+            // Kategorier via Mongo
+            IRepository<Category> categoryRepo = new MongoCategoryRepository(connectionString);
             ICategoryService categoryService = new CategoryService(categoryRepo);
 
-            // ====== Start WinForms with BOTH services ======
             Application.Run(new Form1(poddService, categoryService));
         }
     }

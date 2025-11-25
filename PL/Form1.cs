@@ -40,7 +40,7 @@ namespace PL
 
             foreach (var feed in feeds)
             {
-                lstPoddar.Items.Add($"{feed.Id}: {feed.Name}");
+                lstPoddar.Items.Add(feed.Name);
             }
         }
 
@@ -49,22 +49,21 @@ namespace PL
             string namn = txtName.Text;
             string rss = txtRssUrl.Text;
 
-            // Kolla att en kategori är vald
-            if (lstCategories.SelectedItem == null)
+            if (lstCategories.SelectedIndex < 0)
             {
                 MessageBox.Show("Välj en kategori först.");
                 return;
             }
 
-            // Plocka ut kategori-id från t.ex. "1: Humor"
-            string selectedCategory = lstCategories.SelectedItem.ToString();
-            string categoryId = selectedCategory.Split(':')[0].Trim();
+            // Hämta alla kategorier och ta den med samma index som det som valts i listan
+            var categories = _categoryService.GetAll();
+            var selectedCategory = categories[lstCategories.SelectedIndex];
 
             var nyPodd = new PoddFeed
             {
                 Name = namn,
                 RssUrl = rss,
-                CategoryId = categoryId      // ← KOPPLINGEN HÄR
+                CategoryId = selectedCategory.Id!   // ← korrekt Mongo-ID
             };
 
             _poddService.Add(nyPodd);
@@ -90,7 +89,7 @@ namespace PL
 
             foreach (var c in categories)
             {
-                lstCategories.Items.Add($"{c.Id}: {c.Name}");
+                lstCategories.Items.Add(c.Name);
             }
         }
 
@@ -100,13 +99,13 @@ namespace PL
         private void btnTaBortPodd_Click_1(object sender, EventArgs e)
         {
             {
-                if (lstPoddar.SelectedItem == null)
-                    return;
+                int index = lstPoddar.SelectedIndex;
+                if (index < 0) return;
 
-                string selected = lstPoddar.SelectedItem.ToString();
-                string id = selected.Split(':')[0].Trim();
+                var feeds = _poddService.GetAll();
+                var valdPodd = feeds[index];
 
-                _poddService.Delete(id);
+                _poddService.Delete(valdPodd.Id!);
 
                 LaddaPoddarTillLista();
             }
@@ -130,26 +129,27 @@ namespace PL
 
         private void btnDeleteCategory_Click_1(object sender, EventArgs e)
         {
+            int index = lstCategories.SelectedIndex;
+            if (index < 0)
+                return;
+
+            // Hämta alla kategorier från databasen
+            var categories = _categoryService.GetAll();
+
+            // Ta fram kategorin baserat på index
+            var selectedCategory = categories[index];
+
+            // Bekräftelse (krav i user story)
+            var result = MessageBox.Show(
+                "Vill du verkligen ta bort denna kategori?",
+                "Bekräfta",
+                MessageBoxButtons.YesNo);
+
+            if (result == DialogResult.Yes)
             {
-                // Ingen vald kategori → gör inget
-                if (lstCategories.SelectedItem == null)
-                    return;
+                _categoryService.Delete(selectedCategory.Id!);  // ← ID kommer från Mongo, inte från listboxen
 
-                // Hämta ID från vald rad
-                string selected = lstCategories.SelectedItem.ToString();
-                string id = selected.Split(':')[0].Trim();
-
-                // Bekräftelseruta (krav från user story)
-                DialogResult result = MessageBox.Show(
-                    "Vill du verkligen ta bort kategorin?",
-                    "Bekräfta",
-                    MessageBoxButtons.YesNo);
-
-                if (result == DialogResult.Yes)
-                {
-                    _categoryService.Delete(id);
-                    LaddaKategorierTillLista();
-                }
+                LaddaKategorierTillLista();
             }
         }
 
@@ -157,33 +157,40 @@ namespace PL
         {
             string rssUrl = txtRssUrl.Text;
 
-            // OM en podd är vald i listan: använd dess RssUrl istället
-            if (lstPoddar.SelectedItem != null)
+            // OM en podd är vald i listan: använd dess RSS-URL
+            if (lstPoddar.SelectedIndex >= 0)
             {
-                string selected = lstPoddar.SelectedItem.ToString();
-                string id = selected.Split(':')[0].Trim();   // "1: Min podd" → "1"
+                var feeds = _poddService.GetAll();
+                var feed = feeds[lstPoddar.SelectedIndex];
 
-                var feed = _poddService.GetById(id);
-                if (feed != null && !string.IsNullOrWhiteSpace(feed.RssUrl))
+                if (!string.IsNullOrWhiteSpace(feed.RssUrl))
                 {
                     rssUrl = feed.RssUrl;
-                    txtRssUrl.Text = feed.RssUrl; // synka textboxen också (nice men frivilligt)
+                    txtRssUrl.Text = feed.RssUrl;
                 }
             }
 
-            // Om vi fortfarande inte har någon URL → gör inget
+            // Ingen RSS = inget att ladda
             if (string.IsNullOrWhiteSpace(rssUrl))
-                return;
-
-            // Hämta avsnitt via service
-            _currentEpisodes = _poddService.LoadEpisodesFromRss(rssUrl);
-
-            // Fyll avsnittslistan
-            lstAvsnitt.Items.Clear();
-
-            foreach (var ep in _currentEpisodes)
             {
-                lstAvsnitt.Items.Add(ep.Title);
+                MessageBox.Show("Ingen RSS-URL att ladda.");
+                return;
+            }
+
+            try
+            {
+                _currentEpisodes = _poddService.LoadEpisodesFromRss(rssUrl);
+
+                lstAvsnitt.Items.Clear();
+
+                foreach (var ep in _currentEpisodes)
+                {
+                    lstAvsnitt.Items.Add(ep.Title);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Kunde inte läsa RSS-flödet.\n" + ex.Message);
             }
         }
 
@@ -200,11 +207,6 @@ namespace PL
                 $"Titel: {ep.Title}{Environment.NewLine}" +
                 $"Publicerad: {ep.PublishDate}{Environment.NewLine}{Environment.NewLine}" +
                 $"{ep.Description}";
-
-        }
-
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
 
         }
     }

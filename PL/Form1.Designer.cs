@@ -203,7 +203,6 @@
             lstPoddar.Name = "lstPoddar";
             lstPoddar.Size = new Size(240, 164);
             lstPoddar.TabIndex = 10;
-            lstPoddar.SelectedIndexChanged += listBox1_SelectedIndexChanged;
             // 
             // btnLaggTill
             // 
