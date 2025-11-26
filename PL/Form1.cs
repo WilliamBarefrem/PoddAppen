@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using BL;
 using Models;
+using Microsoft.VisualBasic;
 
 namespace PL
 {
@@ -26,6 +27,7 @@ namespace PL
         {
             LaddaPoddarTillLista();
             LaddaKategorierTillLista();
+            LaddaKategoriFilterCombo();
         }
 
         // ---------------------------
@@ -209,6 +211,179 @@ namespace PL
                 $"{ep.Description}";
 
         }
+
+        private void btnShowRenamePodd_Click(object sender, EventArgs e)
+        {
+            int index = lstPoddar.SelectedIndex;
+            if (index < 0)
+            {
+                MessageBox.Show("Välj en podd först.");
+                return;
+            }
+
+            // Visa popup
+            string newName = Interaction.InputBox(
+                "Skriv in nytt namn för podden:",
+                "Byt namn",
+                ""
+            );
+
+            // Avbröt?
+            if (string.IsNullOrWhiteSpace(newName))
+                return;
+
+            // Hämta podden
+            var feeds = _poddService.GetAll();
+            var feed = feeds[index];
+
+            feed.Name = newName;
+
+            _poddService.Update(feed);
+
+            LaddaPoddarTillLista();
+        }
+
+        private void btnChangePoddCategory_Click(object sender, EventArgs e)
+        {
+            int index = lstPoddar.SelectedIndex;
+            if (index < 0)
+            {
+                MessageBox.Show("Välj en podd först.");
+                return;
+            }
+
+            // Popup där man skriver kategorinamnet man vill byta till
+            string newCategoryName = Interaction.InputBox(
+                "Skriv in namnet på den nya kategorin:",
+                "Byt kategori",
+                ""
+            );
+
+            // Avbröt?
+            if (string.IsNullOrWhiteSpace(newCategoryName))
+                return;
+
+            // Hämta alla kategorier
+            var categories = _categoryService.GetAll();
+
+            // Leta efter kategori med det namnet
+            var newCategory = categories.FirstOrDefault(c =>
+                c.Name.Equals(newCategoryName, StringComparison.OrdinalIgnoreCase));
+
+            if (newCategory == null)
+            {
+                MessageBox.Show("Ingen kategori med det namnet hittades.");
+                return;
+            }
+
+            // Hämta vald podd
+            var feeds = _poddService.GetAll();
+            var feed = feeds[index];
+
+            // Uppdatera kategori-ID
+            feed.CategoryId = newCategory.Id;
+
+            _poddService.Update(feed);
+
+            MessageBox.Show("Kategori uppdaterad!");
+
+            LaddaPoddarTillLista();
+        }
+
+        private void LaddaKategoriFilterCombo()
+        {
+            cmbCategoryFilter.Items.Clear();
+
+            // Lägg till "Alla"
+            cmbCategoryFilter.Items.Add("Alla");
+
+            var categories = _categoryService.GetAll();
+
+            foreach (var c in categories)
+            {
+                cmbCategoryFilter.Items.Add(c.Name);
+            }
+
+            // Default -> "Alla"
+            cmbCategoryFilter.SelectedIndex = 0;
+        }
+
+        private void btnRenameCategory_Click(object sender, EventArgs e)
+        {
+            int index = lstCategories.SelectedIndex;
+            if (index < 0)
+            {
+                MessageBox.Show("Välj en kategori först.");
+                return;
+            }
+
+            // 2. Hämta alla kategorier och välj den markerade
+            var categories = _categoryService.GetAll();
+            var selectedCategory = categories[index];
+
+            // 3. Visa popup för nytt namn (förifyllt med nuvarande namn)
+            string newName = Interaction.InputBox(
+                "Skriv in nytt namn för kategorin:",
+                "Byt kategorinamn",
+                selectedCategory.Name
+            );
+
+            // 4. Om användaren avbryter eller lämnar tomt → gör inget
+            if (string.IsNullOrWhiteSpace(newName))
+                return;
+
+            // 5. Uppdatera kategoriobjektet
+            selectedCategory.Name = newName;
+
+            // 6. Spara via service (går vidare till Mongo)
+            _categoryService.Update(selectedCategory);
+
+            // 7. Ladda om listan så nya namnet syns
+            LaddaKategorierTillLista();
+        }
+
+        private void cmbCategoryFilter_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string selected = cmbCategoryFilter.SelectedItem.ToString();
+
+            // Om "Alla" → visa alla
+            if (selected == "Alla")
+            {
+                LaddaPoddarTillLista();
+                return;
+            }
+
+            // Hämta kategorier och hitta vald
+            var categories = _categoryService.GetAll();
+            var selectedCategory = categories.FirstOrDefault(c => c.Name == selected);
+
+            if (selectedCategory == null)
+                return;
+
+            var feeds = _poddService.GetAll();
+
+            var filtered = feeds
+                .Where(f => f.CategoryId == selectedCategory.Id)
+                .ToList();
+
+            lstPoddar.Items.Clear();
+
+            foreach (var feed in filtered)
+            {
+                lstPoddar.Items.Add(feed.Name);
+            }
+        }
+
+        private void txtEpisodeInfo_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblBiblotek_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
+
 

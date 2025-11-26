@@ -30,10 +30,17 @@
         {
             L = new TabControl();
             tabPage2 = new TabPage();
+            lblBiblotek = new Label();
+            cmbCategoryFilter = new ComboBox();
+            btnChangePoddCategory = new Button();
+            btnShowRenamePodd = new Button();
+            btnTaBortPodd = new Button();
+            lstPoddar = new ListBox();
             txtEpisodeInfo = new TextBox();
             lstAvsnitt = new ListBox();
             btnLaddaRss = new Button();
             tabPage1 = new TabPage();
+            btnRenameCategory = new Button();
             btnDeleteCategory = new Button();
             btnAddCategory = new Button();
             lstCategories = new ListBox();
@@ -41,8 +48,6 @@
             lblCategoryName = new Label();
             lblRss = new Label();
             txtRssUrl = new TextBox();
-            btnTaBortPodd = new Button();
-            lstPoddar = new ListBox();
             btnLaggTill = new Button();
             lblName = new Label();
             txtName = new TextBox();
@@ -63,6 +68,12 @@
             // 
             // tabPage2
             // 
+            tabPage2.Controls.Add(lblBiblotek);
+            tabPage2.Controls.Add(cmbCategoryFilter);
+            tabPage2.Controls.Add(btnChangePoddCategory);
+            tabPage2.Controls.Add(btnShowRenamePodd);
+            tabPage2.Controls.Add(btnTaBortPodd);
+            tabPage2.Controls.Add(lstPoddar);
             tabPage2.Controls.Add(txtEpisodeInfo);
             tabPage2.Controls.Add(lstAvsnitt);
             tabPage2.Controls.Add(btnLaddaRss);
@@ -74,29 +85,86 @@
             tabPage2.Text = "tabPage2";
             tabPage2.UseVisualStyleBackColor = true;
             // 
+            // lblBiblotek
+            // 
+            lblBiblotek.Font = new Font("Segoe UI Black", 28.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblBiblotek.Location = new Point(3, 0);
+            lblBiblotek.Name = "lblBiblotek";
+            lblBiblotek.Size = new Size(358, 102);
+            lblBiblotek.TabIndex = 23;
+            lblBiblotek.Text = "Biblotek";
+            lblBiblotek.Click += lblBiblotek_Click;
+            // 
+            // cmbCategoryFilter
+            // 
+            cmbCategoryFilter.FormattingEnabled = true;
+            cmbCategoryFilter.Location = new Point(165, 121);
+            cmbCategoryFilter.Name = "cmbCategoryFilter";
+            cmbCategoryFilter.Size = new Size(242, 40);
+            cmbCategoryFilter.TabIndex = 22;
+            cmbCategoryFilter.SelectedIndexChanged += cmbCategoryFilter_SelectedIndexChanged;
+            // 
+            // btnChangePoddCategory
+            // 
+            btnChangePoddCategory.Location = new Point(393, 704);
+            btnChangePoddCategory.Name = "btnChangePoddCategory";
+            btnChangePoddCategory.Size = new Size(159, 46);
+            btnChangePoddCategory.TabIndex = 21;
+            btnChangePoddCategory.Text = "Byt Kategori";
+            btnChangePoddCategory.UseVisualStyleBackColor = true;
+            btnChangePoddCategory.Click += btnChangePoddCategory_Click;
+            // 
+            // btnShowRenamePodd
+            // 
+            btnShowRenamePodd.Location = new Point(182, 703);
+            btnShowRenamePodd.Name = "btnShowRenamePodd";
+            btnShowRenamePodd.Size = new Size(159, 46);
+            btnShowRenamePodd.TabIndex = 20;
+            btnShowRenamePodd.Text = "Byt Namn";
+            btnShowRenamePodd.UseVisualStyleBackColor = true;
+            btnShowRenamePodd.Click += btnShowRenamePodd_Click;
+            // 
+            // btnTaBortPodd
+            // 
+            btnTaBortPodd.Location = new Point(182, 755);
+            btnTaBortPodd.Name = "btnTaBortPodd";
+            btnTaBortPodd.Size = new Size(159, 46);
+            btnTaBortPodd.TabIndex = 19;
+            btnTaBortPodd.Text = "Ta Bort Podd";
+            btnTaBortPodd.UseVisualStyleBackColor = true;
+            // 
+            // lstPoddar
+            // 
+            lstPoddar.FormattingEnabled = true;
+            lstPoddar.Location = new Point(165, 181);
+            lstPoddar.Name = "lstPoddar";
+            lstPoddar.Size = new Size(428, 484);
+            lstPoddar.TabIndex = 18;
+            // 
             // txtEpisodeInfo
             // 
             txtEpisodeInfo.Font = new Font("Segoe UI", 11F);
-            txtEpisodeInfo.Location = new Point(387, 79);
+            txtEpisodeInfo.Location = new Point(1302, 184);
             txtEpisodeInfo.Multiline = true;
             txtEpisodeInfo.Name = "txtEpisodeInfo";
             txtEpisodeInfo.ReadOnly = true;
             txtEpisodeInfo.ScrollBars = ScrollBars.Vertical;
-            txtEpisodeInfo.Size = new Size(300, 200);
+            txtEpisodeInfo.Size = new Size(646, 473);
             txtEpisodeInfo.TabIndex = 17;
+            txtEpisodeInfo.TextChanged += txtEpisodeInfo_TextChanged;
             // 
             // lstAvsnitt
             // 
             lstAvsnitt.FormattingEnabled = true;
-            lstAvsnitt.Location = new Point(128, 79);
+            lstAvsnitt.Location = new Point(653, 184);
             lstAvsnitt.Name = "lstAvsnitt";
-            lstAvsnitt.Size = new Size(240, 164);
+            lstAvsnitt.Size = new Size(513, 484);
             lstAvsnitt.TabIndex = 16;
             lstAvsnitt.SelectedIndexChanged += lstAvsnitt_SelectedIndexChanged;
             // 
             // btnLaddaRss
             // 
-            btnLaddaRss.Location = new Point(98, 277);
+            btnLaddaRss.Location = new Point(666, 704);
             btnLaddaRss.Name = "btnLaddaRss";
             btnLaddaRss.Size = new Size(150, 46);
             btnLaddaRss.TabIndex = 15;
@@ -106,6 +174,7 @@
             // 
             // tabPage1
             // 
+            tabPage1.Controls.Add(btnRenameCategory);
             tabPage1.Controls.Add(btnDeleteCategory);
             tabPage1.Controls.Add(btnAddCategory);
             tabPage1.Controls.Add(lstCategories);
@@ -113,8 +182,6 @@
             tabPage1.Controls.Add(lblCategoryName);
             tabPage1.Controls.Add(lblRss);
             tabPage1.Controls.Add(txtRssUrl);
-            tabPage1.Controls.Add(btnTaBortPodd);
-            tabPage1.Controls.Add(lstPoddar);
             tabPage1.Controls.Add(btnLaggTill);
             tabPage1.Controls.Add(lblName);
             tabPage1.Controls.Add(txtName);
@@ -126,11 +193,21 @@
             tabPage1.Text = "tabPage1";
             tabPage1.UseVisualStyleBackColor = true;
             // 
+            // btnRenameCategory
+            // 
+            btnRenameCategory.Location = new Point(480, 492);
+            btnRenameCategory.Name = "btnRenameCategory";
+            btnRenameCategory.Size = new Size(303, 46);
+            btnRenameCategory.TabIndex = 19;
+            btnRenameCategory.Text = "Byt Kategori Namn";
+            btnRenameCategory.UseVisualStyleBackColor = true;
+            btnRenameCategory.Click += btnRenameCategory_Click;
+            // 
             // btnDeleteCategory
             // 
-            btnDeleteCategory.Location = new Point(506, 354);
+            btnDeleteCategory.Location = new Point(480, 417);
             btnDeleteCategory.Name = "btnDeleteCategory";
-            btnDeleteCategory.Size = new Size(220, 46);
+            btnDeleteCategory.Size = new Size(303, 46);
             btnDeleteCategory.TabIndex = 18;
             btnDeleteCategory.Text = "Ta Bort Kategori";
             btnDeleteCategory.UseVisualStyleBackColor = true;
@@ -138,9 +215,9 @@
             // 
             // btnAddCategory
             // 
-            btnAddCategory.Location = new Point(507, 292);
+            btnAddCategory.Location = new Point(480, 336);
             btnAddCategory.Name = "btnAddCategory";
-            btnAddCategory.Size = new Size(219, 46);
+            btnAddCategory.Size = new Size(303, 46);
             btnAddCategory.TabIndex = 17;
             btnAddCategory.Text = "Lagg Till Kategori";
             btnAddCategory.UseVisualStyleBackColor = true;
@@ -149,7 +226,7 @@
             // lstCategories
             // 
             lstCategories.FormattingEnabled = true;
-            lstCategories.Location = new Point(505, 115);
+            lstCategories.Location = new Point(520, 122);
             lstCategories.Name = "lstCategories";
             lstCategories.Size = new Size(240, 164);
             lstCategories.TabIndex = 16;
@@ -185,24 +262,6 @@
             txtRssUrl.Name = "txtRssUrl";
             txtRssUrl.Size = new Size(200, 39);
             txtRssUrl.TabIndex = 12;
-            // 
-            // btnTaBortPodd
-            // 
-            btnTaBortPodd.Location = new Point(31, 299);
-            btnTaBortPodd.Name = "btnTaBortPodd";
-            btnTaBortPodd.Size = new Size(159, 46);
-            btnTaBortPodd.TabIndex = 11;
-            btnTaBortPodd.Text = "Ta Bort Podd";
-            btnTaBortPodd.UseVisualStyleBackColor = true;
-            btnTaBortPodd.Click += btnTaBortPodd_Click_1;
-            // 
-            // lstPoddar
-            // 
-            lstPoddar.FormattingEnabled = true;
-            lstPoddar.Location = new Point(35, 130);
-            lstPoddar.Name = "lstPoddar";
-            lstPoddar.Size = new Size(240, 164);
-            lstPoddar.TabIndex = 10;
             // 
             // btnLaggTill
             // 
@@ -255,16 +314,21 @@
         private ListBox lstAvsnitt;
         private Button btnLaddaRss;
         private Button btnDeleteCategory;
-        private Button btnAddCategory;
         private ListBox lstCategories;
         private TextBox txtCategoryName;
         private Label lblCategoryName;
         private Label lblRss;
         private TextBox txtRssUrl;
-        private Button btnTaBortPodd;
-        private ListBox lstPoddar;
         private Button btnLaggTill;
         private Label lblName;
         private TextBox txtName;
+        private Button btnTaBortPodd;
+        private ListBox lstPoddar;
+        private Button btnShowRenamePodd;
+        private Button btnChangePoddCategory;
+        private Button btnRenameCategory;
+        private Button btnAddCategory;
+        private ComboBox cmbCategoryFilter;
+        private Label lblBiblotek;
     }
 }
