@@ -58,6 +58,17 @@ namespace PL
                 MessageBox.Show("Välj en kategori först.");
                 return;
             }
+            if (string.IsNullOrWhiteSpace(namn))
+            {
+                MessageBox.Show("Poddnamn får inte vara tomt.");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(rss))
+            {
+                MessageBox.Show("RSS-URL får inte vara tom.");
+                return;
+            }
 
             var categories = await _categoryService.GetAllAsync();
             var selectedCategory = categories[lstCategories.SelectedIndex];
@@ -95,15 +106,24 @@ namespace PL
 
         private async void btnTaBortPodd_Click_1(object sender, EventArgs e)
         {
-            int index = lstPoddar.SelectedIndex;
-            if (index < 0) return;
+           
+            try
+            {
+                int index = lstPoddar.SelectedIndex;
+                if (index < 0) return;
 
-            var feeds = await _poddService.GetAllAsync();
-            var valdPodd = feeds[index];
 
-            await _poddService.DeleteAsync(valdPodd.Id!);
+                var feeds = await _poddService.GetAllAsync();
+                var valdPodd = feeds[index];
 
-            await LaddaPoddarTillListaAsync();
+                await _poddService.DeleteAsync(valdPodd.Id!);
+
+                await LaddaPoddarTillListaAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ett fel uppstod när podden skulle tas bort.\n" + ex.Message);
+            }
         }
 
         private async void btnAddCategory_Click_1(object sender, EventArgs e)
@@ -114,6 +134,12 @@ namespace PL
             {
                 Name = name
             };
+
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                MessageBox.Show("Kategorinamn får inte vara tomt.");
+                return;
+            }
 
             await _categoryService.AddAsync(category);
 

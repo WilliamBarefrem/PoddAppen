@@ -132,6 +132,7 @@
             btnTaBortPodd.TabIndex = 19;
             btnTaBortPodd.Text = "Ta Bort Podd";
             btnTaBortPodd.UseVisualStyleBackColor = true;
+            btnTaBortPodd.Click += btnTaBortPodd_Click_1;
             // 
             // lstPoddar
             // 
