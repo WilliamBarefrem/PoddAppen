@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using BL;
 using Models;
 using MongoDB.Driver;
@@ -25,69 +21,71 @@ namespace DAL
         }
 
         // CREATE
-        public void Add(PoddFeed item)
+        public async Task AddAsync(PoddFeed item)
         {
-            using var session = _client.StartSession();
+            using var session = await _client.StartSessionAsync();
             session.StartTransaction();
             try
             {
-                _collection.InsertOne(session, item);
-                session.CommitTransaction();
+                await _collection.InsertOneAsync(session, item);
+                await session.CommitTransactionAsync();
             }
             catch
             {
-                session.AbortTransaction();
+                await session.AbortTransactionAsync();
                 throw;
             }
         }
 
         // READ – alla
-        public List<PoddFeed> GetAll()
+        public async Task<List<PoddFeed>> GetAllAsync()
         {
-            return _collection.Find(_ => true).ToList();
+            var cursor = await _collection.FindAsync(_ => true);
+            return await cursor.ToListAsync();
         }
 
         // READ – en
-        public PoddFeed? GetById(string id)
+        public async Task<PoddFeed?> GetByIdAsync(string id)
         {
             var filter = Builders<PoddFeed>.Filter.Eq(f => f.Id, id);
-            return _collection.Find(filter).FirstOrDefault();
+            var cursor = await _collection.FindAsync(filter);
+            return await cursor.FirstOrDefaultAsync();
         }
 
         // UPDATE
-        public bool Update(PoddFeed item)
+        public async Task<bool> UpdateAsync(PoddFeed item)
         {
-            using var session = _client.StartSession();
+            using var session = await _client.StartSessionAsync();
             session.StartTransaction();
             try
             {
                 var filter = Builders<PoddFeed>.Filter.Eq(f => f.Id, item.Id);
-                var result = _collection.ReplaceOne(session, filter, item);
-                session.CommitTransaction();
+                var result = await _collection.ReplaceOneAsync(session, filter, item);
+                await session.CommitTransactionAsync();
                 return result.ModifiedCount == 1;
             }
             catch
             {
-                session.AbortTransaction();
+                await session.AbortTransactionAsync();
                 throw;
             }
         }
 
         // DELETE
-        public bool Delete(string id)
+        public async Task<bool> DeleteAsync(string id)
         {
-            using var session = _client.StartSession();
+            using var session = await _client.StartSessionAsync();
             session.StartTransaction();
             try
             {
                 var filter = Builders<PoddFeed>.Filter.Eq(f => f.Id, id);
-                var result = _collection.DeleteOne(session, filter);
-                session.CommitTransaction();
+                var result = await _collection.DeleteOneAsync(session, filter);
+                await session.CommitTransactionAsync();
                 return result.DeletedCount == 1;
             }
             catch
             {
-                session.AbortTransaction();
+                await session.AbortTransactionAsync();
                 throw;
             }
         }

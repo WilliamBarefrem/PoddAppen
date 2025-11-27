@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Models;
@@ -17,42 +15,46 @@ namespace BL
             _repo = repo;
         }
 
-        public void Add(PoddFeed feed)
+        // CREATE
+        public async Task AddAsync(PoddFeed feed)
         {
             if (feed == null) return;
-
-            // enkel validering – här bor dina "regler"
             if (string.IsNullOrWhiteSpace(feed.Name)) return;
             if (string.IsNullOrWhiteSpace(feed.RssUrl)) return;
 
-            _repo.Add(feed);
+            await _repo.AddAsync(feed);
         }
 
-        public List<PoddFeed> GetAll()
+        // READ – alla
+        public Task<List<PoddFeed>> GetAllAsync()
         {
-            return _repo.GetAll();
+            return _repo.GetAllAsync();
         }
 
-        public PoddFeed? GetById(string id)
+        // READ – en
+        public Task<PoddFeed?> GetByIdAsync(string id)
         {
-            return _repo.GetById(id);
+            return _repo.GetByIdAsync(id);
         }
 
-        public bool Update(PoddFeed feed)
+        // UPDATE
+        public async Task<bool> UpdateAsync(PoddFeed feed)
         {
             if (feed == null) return false;
             if (string.IsNullOrWhiteSpace(feed.Name)) return false;
             if (string.IsNullOrWhiteSpace(feed.RssUrl)) return false;
 
-            return _repo.Update(feed);
+            return await _repo.UpdateAsync(feed);
         }
 
-        public bool Delete(string id)
+        // DELETE
+        public Task<bool> DeleteAsync(string id)
         {
-            return _repo.Delete(id);
+            return _repo.DeleteAsync(id);
         }
 
-        public List<Episode> LoadEpisodesFromRss(string rssUrl)
+        // RSS-LÄSNING – också async
+        public async Task<List<Episode>> LoadEpisodesFromRssAsync(string rssUrl)
         {
             var episodes = new List<Episode>();
 
@@ -61,8 +63,11 @@ namespace BL
 
             try
             {
-                var doc = XDocument.Load(rssUrl);
+                // XDocument har ingen bra async direkt, men vi kan hämta strängen async
+                using var http = new System.Net.Http.HttpClient();
+                string xml = await http.GetStringAsync(rssUrl);
 
+                var doc = XDocument.Parse(xml);
                 var items = doc.Descendants("item");
 
                 foreach (var item in items)
@@ -84,13 +89,10 @@ namespace BL
             }
             catch
             {
-                // För kursen kan du nöja dig med att bara svälja fel här
-                // eller logga om du vill.
+                // svälj/logga fel
             }
 
             return episodes;
         }
     }
 }
-    
-

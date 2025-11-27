@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using BL;
 using Models;
@@ -23,22 +25,22 @@ namespace PL
         }
 
         // När formuläret öppnas
-        private void Form1_Load(object sender, EventArgs e)
+        private async void Form1_Load(object sender, EventArgs e)
         {
-            LaddaPoddarTillLista();
-            LaddaKategorierTillLista();
-            LaddaKategoriFilterCombo();
+            await LaddaPoddarTillListaAsync();
+            await LaddaKategorierTillListaAsync();
+            await LaddaKategoriFilterComboAsync();
         }
 
         // ---------------------------
         // PODDFEEDS
         // ---------------------------
 
-        private void LaddaPoddarTillLista()
+        private async Task LaddaPoddarTillListaAsync()
         {
             lstPoddar.Items.Clear();
 
-            List<PoddFeed> feeds = _poddService.GetAll();
+            List<PoddFeed> feeds = await _poddService.GetAllAsync();
 
             foreach (var feed in feeds)
             {
@@ -46,7 +48,7 @@ namespace PL
             }
         }
 
-        private void btnLaggTill_Click(object sender, EventArgs e)
+        private async void btnLaggTill_Click(object sender, EventArgs e)
         {
             string namn = txtName.Text;
             string rss = txtRssUrl.Text;
@@ -57,8 +59,7 @@ namespace PL
                 return;
             }
 
-            // Hämta alla kategorier och ta den med samma index som det som valts i listan
-            var categories = _categoryService.GetAll();
+            var categories = await _categoryService.GetAllAsync();
             var selectedCategory = categories[lstCategories.SelectedIndex];
 
             var nyPodd = new PoddFeed
@@ -68,26 +69,23 @@ namespace PL
                 CategoryId = selectedCategory.Id!   // ← korrekt Mongo-ID
             };
 
-            _poddService.Add(nyPodd);
+            await _poddService.AddAsync(nyPodd);
 
-            LaddaPoddarTillLista();
+            await LaddaPoddarTillListaAsync();
 
             txtName.Clear();
             txtRssUrl.Clear();
         }
 
-
-
-
         // ---------------------------
         // KATEGORIER
         // ---------------------------
 
-        private void LaddaKategorierTillLista()
+        private async Task LaddaKategorierTillListaAsync()
         {
             lstCategories.Items.Clear();
 
-            List<Category> categories = _categoryService.GetAll();
+            List<Category> categories = await _categoryService.GetAllAsync();
 
             foreach (var c in categories)
             {
@@ -95,26 +93,20 @@ namespace PL
             }
         }
 
-
-
-
-        private void btnTaBortPodd_Click_1(object sender, EventArgs e)
+        private async void btnTaBortPodd_Click_1(object sender, EventArgs e)
         {
-            {
-                int index = lstPoddar.SelectedIndex;
-                if (index < 0) return;
+            int index = lstPoddar.SelectedIndex;
+            if (index < 0) return;
 
-                var feeds = _poddService.GetAll();
-                var valdPodd = feeds[index];
+            var feeds = await _poddService.GetAllAsync();
+            var valdPodd = feeds[index];
 
-                _poddService.Delete(valdPodd.Id!);
+            await _poddService.DeleteAsync(valdPodd.Id!);
 
-                LaddaPoddarTillLista();
-            }
-
+            await LaddaPoddarTillListaAsync();
         }
 
-        private void btnAddCategory_Click_1(object sender, EventArgs e)
+        private async void btnAddCategory_Click_1(object sender, EventArgs e)
         {
             string name = txtCategoryName.Text;
 
@@ -123,25 +115,21 @@ namespace PL
                 Name = name
             };
 
-            _categoryService.Add(category);
+            await _categoryService.AddAsync(category);
 
-            LaddaKategorierTillLista();
+            await LaddaKategorierTillListaAsync();
             txtCategoryName.Clear();
         }
 
-        private void btnDeleteCategory_Click_1(object sender, EventArgs e)
+        private async void btnDeleteCategory_Click_1(object sender, EventArgs e)
         {
             int index = lstCategories.SelectedIndex;
             if (index < 0)
                 return;
 
-            // Hämta alla kategorier från databasen
-            var categories = _categoryService.GetAll();
-
-            // Ta fram kategorin baserat på index
+            var categories = await _categoryService.GetAllAsync();
             var selectedCategory = categories[index];
 
-            // Bekräftelse (krav i user story)
             var result = MessageBox.Show(
                 "Vill du verkligen ta bort denna kategori?",
                 "Bekräfta",
@@ -149,20 +137,19 @@ namespace PL
 
             if (result == DialogResult.Yes)
             {
-                _categoryService.Delete(selectedCategory.Id!);  // ← ID kommer från Mongo, inte från listboxen
-
-                LaddaKategorierTillLista();
+                await _categoryService.DeleteAsync(selectedCategory.Id!);
+                await LaddaKategorierTillListaAsync();
+                await LaddaKategoriFilterComboAsync();
             }
         }
 
-        private void btnLaddaRss_Click(object sender, EventArgs e)
+        private async void btnLaddaRss_Click(object sender, EventArgs e)
         {
             string rssUrl = txtRssUrl.Text;
 
-            // OM en podd är vald i listan: använd dess RSS-URL
             if (lstPoddar.SelectedIndex >= 0)
             {
-                var feeds = _poddService.GetAll();
+                var feeds = await _poddService.GetAllAsync();
                 var feed = feeds[lstPoddar.SelectedIndex];
 
                 if (!string.IsNullOrWhiteSpace(feed.RssUrl))
@@ -172,7 +159,6 @@ namespace PL
                 }
             }
 
-            // Ingen RSS = inget att ladda
             if (string.IsNullOrWhiteSpace(rssUrl))
             {
                 MessageBox.Show("Ingen RSS-URL att ladda.");
@@ -181,7 +167,7 @@ namespace PL
 
             try
             {
-                _currentEpisodes = _poddService.LoadEpisodesFromRss(rssUrl);
+                _currentEpisodes = await _poddService.LoadEpisodesFromRssAsync(rssUrl);
 
                 lstAvsnitt.Items.Clear();
 
@@ -209,10 +195,9 @@ namespace PL
                 $"Titel: {ep.Title}{Environment.NewLine}" +
                 $"Publicerad: {ep.PublishDate}{Environment.NewLine}{Environment.NewLine}" +
                 $"{ep.Description}";
-
         }
 
-        private void btnShowRenamePodd_Click(object sender, EventArgs e)
+        private async void btnShowRenamePodd_Click(object sender, EventArgs e)
         {
             int index = lstPoddar.SelectedIndex;
             if (index < 0)
@@ -221,29 +206,26 @@ namespace PL
                 return;
             }
 
-            // Visa popup
             string newName = Interaction.InputBox(
                 "Skriv in nytt namn för podden:",
                 "Byt namn",
                 ""
             );
 
-            // Avbröt?
             if (string.IsNullOrWhiteSpace(newName))
                 return;
 
-            // Hämta podden
-            var feeds = _poddService.GetAll();
+            var feeds = await _poddService.GetAllAsync();
             var feed = feeds[index];
 
             feed.Name = newName;
 
-            _poddService.Update(feed);
+            await _poddService.UpdateAsync(feed);
 
-            LaddaPoddarTillLista();
+            await LaddaPoddarTillListaAsync();
         }
 
-        private void btnChangePoddCategory_Click(object sender, EventArgs e)
+        private async void btnChangePoddCategory_Click(object sender, EventArgs e)
         {
             int index = lstPoddar.SelectedIndex;
             if (index < 0)
@@ -252,21 +234,17 @@ namespace PL
                 return;
             }
 
-            // Popup där man skriver kategorinamnet man vill byta till
             string newCategoryName = Interaction.InputBox(
                 "Skriv in namnet på den nya kategorin:",
                 "Byt kategori",
                 ""
             );
 
-            // Avbröt?
             if (string.IsNullOrWhiteSpace(newCategoryName))
                 return;
 
-            // Hämta alla kategorier
-            var categories = _categoryService.GetAll();
+            var categories = await _categoryService.GetAllAsync();
 
-            // Leta efter kategori med det namnet
             var newCategory = categories.FirstOrDefault(c =>
                 c.Name.Equals(newCategoryName, StringComparison.OrdinalIgnoreCase));
 
@@ -276,39 +254,34 @@ namespace PL
                 return;
             }
 
-            // Hämta vald podd
-            var feeds = _poddService.GetAll();
+            var feeds = await _poddService.GetAllAsync();
             var feed = feeds[index];
 
-            // Uppdatera kategori-ID
             feed.CategoryId = newCategory.Id;
 
-            _poddService.Update(feed);
+            await _poddService.UpdateAsync(feed);
 
             MessageBox.Show("Kategori uppdaterad!");
 
-            LaddaPoddarTillLista();
+            await LaddaPoddarTillListaAsync();
         }
 
-        private void LaddaKategoriFilterCombo()
+        private async Task LaddaKategoriFilterComboAsync()
         {
             cmbCategoryFilter.Items.Clear();
-
-            // Lägg till "Alla"
             cmbCategoryFilter.Items.Add("Alla");
 
-            var categories = _categoryService.GetAll();
+            var categories = await _categoryService.GetAllAsync();
 
             foreach (var c in categories)
             {
                 cmbCategoryFilter.Items.Add(c.Name);
             }
 
-            // Default -> "Alla"
             cmbCategoryFilter.SelectedIndex = 0;
         }
 
-        private void btnRenameCategory_Click(object sender, EventArgs e)
+        private async void btnRenameCategory_Click(object sender, EventArgs e)
         {
             int index = lstCategories.SelectedIndex;
             if (index < 0)
@@ -317,50 +290,43 @@ namespace PL
                 return;
             }
 
-            // 2. Hämta alla kategorier och välj den markerade
-            var categories = _categoryService.GetAll();
+            var categories = await _categoryService.GetAllAsync();
             var selectedCategory = categories[index];
 
-            // 3. Visa popup för nytt namn (förifyllt med nuvarande namn)
             string newName = Interaction.InputBox(
                 "Skriv in nytt namn för kategorin:",
                 "Byt kategorinamn",
                 selectedCategory.Name
             );
 
-            // 4. Om användaren avbryter eller lämnar tomt → gör inget
             if (string.IsNullOrWhiteSpace(newName))
                 return;
 
-            // 5. Uppdatera kategoriobjektet
             selectedCategory.Name = newName;
 
-            // 6. Spara via service (går vidare till Mongo)
-            _categoryService.Update(selectedCategory);
+            await _categoryService.UpdateAsync(selectedCategory);
 
-            // 7. Ladda om listan så nya namnet syns
-            LaddaKategorierTillLista();
+            await LaddaKategorierTillListaAsync();
+            await LaddaKategoriFilterComboAsync();
         }
 
-        private void cmbCategoryFilter_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cmbCategoryFilter_SelectedIndexChanged(object sender, EventArgs e)
         {
             string selected = cmbCategoryFilter.SelectedItem.ToString();
 
-            // Om "Alla" → visa alla
             if (selected == "Alla")
             {
-                LaddaPoddarTillLista();
+                await LaddaPoddarTillListaAsync();
                 return;
             }
 
-            // Hämta kategorier och hitta vald
-            var categories = _categoryService.GetAll();
+            var categories = await _categoryService.GetAllAsync();
             var selectedCategory = categories.FirstOrDefault(c => c.Name == selected);
 
             if (selectedCategory == null)
                 return;
 
-            var feeds = _poddService.GetAll();
+            var feeds = await _poddService.GetAllAsync();
 
             var filtered = feeds
                 .Where(f => f.CategoryId == selectedCategory.Id)
@@ -376,14 +342,10 @@ namespace PL
 
         private void txtEpisodeInfo_TextChanged(object sender, EventArgs e)
         {
-
         }
 
         private void lblBiblotek_Click(object sender, EventArgs e)
         {
-
         }
     }
 }
-
-

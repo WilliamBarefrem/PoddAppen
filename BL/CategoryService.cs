@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using Models;
 
 namespace BL
@@ -17,35 +13,35 @@ namespace BL
             _categoryRepo = categoryRepo;
         }
 
-        public void Add(Category category)
+        public async Task AddAsync(Category category)
         {
             if (category == null) return;
             if (string.IsNullOrWhiteSpace(category.Name)) return;
 
-            _categoryRepo.Add(category);
+            await _categoryRepo.AddAsync(category);
         }
 
-        public List<Category> GetAll()
+        public Task<List<Category>> GetAllAsync()
         {
-            return _categoryRepo.GetAll();
+            return _categoryRepo.GetAllAsync();
         }
 
-        public Category? GetById(string id)
+        public Task<Category?> GetByIdAsync(string id)
         {
-            return _categoryRepo.GetById(id);
+            return _categoryRepo.GetByIdAsync(id);
         }
 
-        public bool Update(Category category)
+        public async Task<bool> UpdateAsync(Category category)
         {
             if (category == null) return false;
             if (string.IsNullOrWhiteSpace(category.Name)) return false;
 
-            return _categoryRepo.Update(category);
+            return await _categoryRepo.UpdateAsync(category);
         }
 
-        public bool Delete(string id)
+        public Task<bool> DeleteAsync(string id)
         {
-            return _categoryRepo.Delete(id);
+            return _categoryRepo.DeleteAsync(id);
         }
     }
 }

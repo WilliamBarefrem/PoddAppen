@@ -13,15 +13,15 @@ namespace PL
         {
             ApplicationConfiguration.Initialize();
 
-            // TODO: byt till din riktiga connection string från Atlas
-            var connectionString = "mongodb+srv://muretdurakovic_db_user:Denko@poddappen.z6ewler.mongodb.net/?appName=PoddAppen";
+            var connectionString =
+                "mongodb+srv://muretdurakovic_db_user:Denko@poddappen.z6ewler.mongodb.net/?appName=PoddAppen";
 
-            // Poddar via Mongo
+            // Repositories
             IRepository<PoddFeed> poddRepo = new MongoPoddFeedRepository(connectionString);
-            IPoddFeedService poddService = new PoddFeedService(poddRepo);
-
-            // Kategorier via Mongo
             IRepository<Category> categoryRepo = new MongoCategoryRepository(connectionString);
+
+            // Services – dessa SKA skickas in till Form1
+            IPoddFeedService poddService = new PoddFeedService(poddRepo);
             ICategoryService categoryService = new CategoryService(categoryRepo);
 
             Application.Run(new Form1(poddService, categoryService));

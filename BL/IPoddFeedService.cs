@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Models;
 
@@ -9,13 +6,14 @@ namespace BL
 {
     public interface IPoddFeedService
     {
-        void Add(PoddFeed feed);
-        List<PoddFeed> GetAll();
-        PoddFeed? GetById(string id);
-        bool Update(PoddFeed feed);
-        bool Delete (string id);
+        // CRUD mot Mongo
+        Task AddAsync(PoddFeed feed);
+        Task<List<PoddFeed>> GetAllAsync();
+        Task<PoddFeed?> GetByIdAsync(string id);
+        Task<bool> UpdateAsync(PoddFeed feed);
+        Task<bool> DeleteAsync(string id);
 
-
-        List<Episode> LoadEpisodesFromRss(string rssUrl);
+        // RSS – också async
+        Task<List<Episode>> LoadEpisodesFromRssAsync(string rssUrl);
     }
 }

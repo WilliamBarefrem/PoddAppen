@@ -1,14 +1,15 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Models;
 
 namespace BL
 {
     public interface ICategoryService
     {
-        void Add(Category category);
-        List<Category> GetAll();
-        Category? GetById(string id);
-        bool Update(Category category);
-        bool Delete(string id);
+        Task AddAsync(Category category);
+        Task<List<Category>> GetAllAsync();
+        Task<Category?> GetByIdAsync(string id);
+        Task<bool> UpdateAsync(Category category);
+        Task<bool> DeleteAsync(string id);
     }
 }

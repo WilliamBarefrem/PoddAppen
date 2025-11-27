@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using BL;
 using Models;
 using MongoDB.Driver;
@@ -24,68 +20,69 @@ namespace DAL
             _collection = db.GetCollection<Category>(collectionName);
         }
 
-        public void Add(Category item)
+        public async Task AddAsync(Category item)
         {
-            using var session = _client.StartSession();
+            using var session = await _client.StartSessionAsync();
             session.StartTransaction();
             try
             {
-                _collection.InsertOne(session, item);
-                session.CommitTransaction();
+                await _collection.InsertOneAsync(session, item);
+                await session.CommitTransactionAsync();
             }
             catch
             {
-                session.AbortTransaction();
+                await session.AbortTransactionAsync();
                 throw;
             }
         }
 
-        public List<Category> GetAll()
+        public async Task<List<Category>> GetAllAsync()
         {
-            return _collection.Find(_ => true).ToList();
+            var cursor = await _collection.FindAsync(_ => true);
+            return await cursor.ToListAsync();
         }
 
-        public Category? GetById(string id)
+        public async Task<Category?> GetByIdAsync(string id)
         {
             var filter = Builders<Category>.Filter.Eq(c => c.Id, id);
-            return _collection.Find(filter).FirstOrDefault();
+            var cursor = await _collection.FindAsync(filter);
+            return await cursor.FirstOrDefaultAsync();
         }
 
-        public bool Update(Category item)
+        public async Task<bool> UpdateAsync(Category item)
         {
-            using var session = _client.StartSession();
+            using var session = await _client.StartSessionAsync();
             session.StartTransaction();
             try
             {
                 var filter = Builders<Category>.Filter.Eq(c => c.Id, item.Id);
-                var result = _collection.ReplaceOne(session, filter, item);
-                session.CommitTransaction();
+                var result = await _collection.ReplaceOneAsync(session, filter, item);
+                await session.CommitTransactionAsync();
                 return result.ModifiedCount == 1;
             }
             catch
             {
-                session.AbortTransaction();
+                await session.AbortTransactionAsync();
                 throw;
             }
         }
 
-        public bool Delete(string id)
+        public async Task<bool> DeleteAsync(string id)
         {
-            using var session = _client.StartSession();
+            using var session = await _client.StartSessionAsync();
             session.StartTransaction();
             try
             {
                 var filter = Builders<Category>.Filter.Eq(c => c.Id, id);
-                var result = _collection.DeleteOne(session, filter);
-                session.CommitTransaction();
+                var result = await _collection.DeleteOneAsync(session, filter);
+                await session.CommitTransactionAsync();
                 return result.DeletedCount == 1;
             }
             catch
             {
-                session.AbortTransaction();
+                await session.AbortTransactionAsync();
                 throw;
             }
         }
     }
 }
-

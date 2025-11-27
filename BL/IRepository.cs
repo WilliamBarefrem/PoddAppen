@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Models;
 
 namespace BL
 {
     public interface IRepository<T>
     {
-        public void Add(T item);
-        List<T> GetAll();
-        T? GetById(string Id);
-        bool Update (T item);
-        bool Delete(string Id);
-
+        Task AddAsync(T item);
+        Task<List<T>> GetAllAsync();
+        Task<T?> GetByIdAsync(string id);
+        Task<bool> UpdateAsync(T item);
+        Task<bool> DeleteAsync(string id);
     }
 }
