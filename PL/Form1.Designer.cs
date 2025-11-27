@@ -60,7 +60,7 @@
             // 
             L.Controls.Add(tabPage2);
             L.Controls.Add(tabPage1);
-            L.Location = new Point(12, 12);
+            L.Location = new Point(12, 8);
             L.Name = "L";
             L.SelectedIndex = 0;
             L.Size = new Size(2041, 1031);
@@ -82,7 +82,7 @@
             tabPage2.Padding = new Padding(3);
             tabPage2.Size = new Size(2025, 977);
             tabPage2.TabIndex = 1;
-            tabPage2.Text = "tabPage2";
+            tabPage2.Text = "Biblotek";
             tabPage2.UseVisualStyleBackColor = true;
             // 
             // lblBiblotek
@@ -191,12 +191,12 @@
             tabPage1.Padding = new Padding(3);
             tabPage1.Size = new Size(2025, 977);
             tabPage1.TabIndex = 0;
-            tabPage1.Text = "tabPage1";
+            tabPage1.Text = "Add Podd";
             tabPage1.UseVisualStyleBackColor = true;
             // 
             // btnRenameCategory
             // 
-            btnRenameCategory.Location = new Point(480, 492);
+            btnRenameCategory.Location = new Point(1054, 616);
             btnRenameCategory.Name = "btnRenameCategory";
             btnRenameCategory.Size = new Size(303, 46);
             btnRenameCategory.TabIndex = 19;
@@ -206,7 +206,7 @@
             // 
             // btnDeleteCategory
             // 
-            btnDeleteCategory.Location = new Point(480, 417);
+            btnDeleteCategory.Location = new Point(1054, 541);
             btnDeleteCategory.Name = "btnDeleteCategory";
             btnDeleteCategory.Size = new Size(303, 46);
             btnDeleteCategory.TabIndex = 18;
@@ -216,7 +216,7 @@
             // 
             // btnAddCategory
             // 
-            btnAddCategory.Location = new Point(480, 336);
+            btnAddCategory.Location = new Point(1054, 460);
             btnAddCategory.Name = "btnAddCategory";
             btnAddCategory.Size = new Size(303, 46);
             btnAddCategory.TabIndex = 17;
@@ -227,14 +227,14 @@
             // lstCategories
             // 
             lstCategories.FormattingEnabled = true;
-            lstCategories.Location = new Point(520, 122);
+            lstCategories.Location = new Point(1094, 246);
             lstCategories.Name = "lstCategories";
             lstCategories.Size = new Size(240, 164);
             lstCategories.TabIndex = 16;
             // 
             // txtCategoryName
             // 
-            txtCategoryName.Location = new Point(520, 54);
+            txtCategoryName.Location = new Point(1094, 178);
             txtCategoryName.Name = "txtCategoryName";
             txtCategoryName.Size = new Size(200, 39);
             txtCategoryName.TabIndex = 15;
@@ -242,7 +242,7 @@
             // lblCategoryName
             // 
             lblCategoryName.AutoSize = true;
-            lblCategoryName.Location = new Point(520, 13);
+            lblCategoryName.Location = new Point(1094, 137);
             lblCategoryName.Name = "lblCategoryName";
             lblCategoryName.Size = new Size(103, 32);
             lblCategoryName.TabIndex = 14;
@@ -251,7 +251,7 @@
             // lblRss
             // 
             lblRss.AutoSize = true;
-            lblRss.Location = new Point(284, 13);
+            lblRss.Location = new Point(858, 137);
             lblRss.Name = "lblRss";
             lblRss.Size = new Size(107, 32);
             lblRss.TabIndex = 13;
@@ -259,16 +259,16 @@
             // 
             // txtRssUrl
             // 
-            txtRssUrl.Location = new Point(284, 54);
+            txtRssUrl.Location = new Point(858, 178);
             txtRssUrl.Name = "txtRssUrl";
             txtRssUrl.Size = new Size(200, 39);
             txtRssUrl.TabIndex = 12;
             // 
             // btnLaggTill
             // 
-            btnLaggTill.Location = new Point(31, 351);
+            btnLaggTill.Location = new Point(609, 283);
             btnLaggTill.Name = "btnLaggTill";
-            btnLaggTill.Size = new Size(175, 46);
+            btnLaggTill.Size = new Size(356, 115);
             btnLaggTill.TabIndex = 9;
             btnLaggTill.Text = "Lagg Till Podd";
             btnLaggTill.UseVisualStyleBackColor = true;
@@ -277,7 +277,7 @@
             // lblName
             // 
             lblName.AutoSize = true;
-            lblName.Location = new Point(35, 13);
+            lblName.Location = new Point(609, 137);
             lblName.Name = "lblName";
             lblName.Size = new Size(83, 32);
             lblName.TabIndex = 8;
@@ -285,7 +285,7 @@
             // 
             // txtName
             // 
-            txtName.Location = new Point(35, 54);
+            txtName.Location = new Point(609, 178);
             txtName.Name = "txtName";
             txtName.Size = new Size(200, 39);
             txtName.TabIndex = 7;
