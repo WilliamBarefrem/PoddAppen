@@ -15,7 +15,7 @@ namespace BL
             _repo = repo;
         }
 
-        // CREATE
+      
         public async Task AddAsync(PoddFeed feed)
         {
             if (feed == null) return;
@@ -25,19 +25,19 @@ namespace BL
             await _repo.AddAsync(feed);
         }
 
-        // READ – alla
+    
         public Task<List<PoddFeed>> GetAllAsync()
         {
             return _repo.GetAllAsync();
         }
 
-        // READ – en
+        
         public Task<PoddFeed?> GetByIdAsync(string id)
         {
             return _repo.GetByIdAsync(id);
         }
 
-        // UPDATE
+        
         public async Task<bool> UpdateAsync(PoddFeed feed)
         {
             if (feed == null) return false;
@@ -47,13 +47,13 @@ namespace BL
             return await _repo.UpdateAsync(feed);
         }
 
-        // DELETE
+     
         public Task<bool> DeleteAsync(string id)
         {
             return _repo.DeleteAsync(id);
         }
 
-        // RSS-LÄSNING – också async
+       
         public async Task<List<Episode>> LoadEpisodesFromRssAsync(string rssUrl)
         {
             var episodes = new List<Episode>();
@@ -63,7 +63,7 @@ namespace BL
 
             try
             {
-                // XDocument har ingen bra async direkt, men vi kan hämta strängen async
+                
                 using var http = new System.Net.Http.HttpClient();
                 string xml = await http.GetStringAsync(rssUrl);
 
@@ -89,7 +89,7 @@ namespace BL
             }
             catch
             {
-                // svälj/logga fel
+               
             }
 
             return episodes;

@@ -20,7 +20,7 @@ namespace DAL
             _collection = db.GetCollection<PoddFeed>(collectionName);
         }
 
-        // CREATE
+       
         public async Task AddAsync(PoddFeed item)
         {
             using var session = await _client.StartSessionAsync();
@@ -37,14 +37,14 @@ namespace DAL
             }
         }
 
-        // READ – alla
+     
         public async Task<List<PoddFeed>> GetAllAsync()
         {
             var cursor = await _collection.FindAsync(_ => true);
             return await cursor.ToListAsync();
         }
 
-        // READ – en
+        
         public async Task<PoddFeed?> GetByIdAsync(string id)
         {
             var filter = Builders<PoddFeed>.Filter.Eq(f => f.Id, id);
@@ -52,7 +52,7 @@ namespace DAL
             return await cursor.FirstOrDefaultAsync();
         }
 
-        // UPDATE
+       
         public async Task<bool> UpdateAsync(PoddFeed item)
         {
             using var session = await _client.StartSessionAsync();
@@ -71,7 +71,7 @@ namespace DAL
             }
         }
 
-        // DELETE
+       
         public async Task<bool> DeleteAsync(string id)
         {
             using var session = await _client.StartSessionAsync();

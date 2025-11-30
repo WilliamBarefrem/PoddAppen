@@ -11,12 +11,12 @@ namespace PL
 {
     public partial class Form1 : Form
     {
-        // Services från BL-lagret
+        
         private readonly IPoddFeedService _poddService;
         private readonly ICategoryService _categoryService;
         private List<Episode> _currentEpisodes = new();
 
-        // Konstruktor tar emot båda services
+       
         public Form1(IPoddFeedService poddService, ICategoryService categoryService)
         {
             InitializeComponent();
@@ -24,7 +24,7 @@ namespace PL
             _categoryService = categoryService;
         }
 
-        // När formuläret öppnas
+        
         private async void Form1_Load(object sender, EventArgs e)
         {
             await LaddaPoddarTillListaAsync();
@@ -32,9 +32,7 @@ namespace PL
             await LaddaKategoriFilterComboAsync();
         }
 
-        // ---------------------------
-        // PODDFEEDS
-        // ---------------------------
+        
 
         private async Task LaddaPoddarTillListaAsync()
         {
@@ -77,7 +75,7 @@ namespace PL
             {
                 Name = namn,
                 RssUrl = rss,
-                CategoryId = selectedCategory.Id!   // ← korrekt Mongo-ID
+                CategoryId = selectedCategory.Id!  
             };
 
             await _poddService.AddAsync(nyPodd);
@@ -88,9 +86,7 @@ namespace PL
             txtRssUrl.Clear();
         }
 
-        // ---------------------------
-        // KATEGORIER
-        // ---------------------------
+        
 
         private async Task LaddaKategorierTillListaAsync()
         {
